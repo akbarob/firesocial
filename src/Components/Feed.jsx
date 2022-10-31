@@ -12,8 +12,8 @@ import MasonryLayout from "./MasonryLayout";
 import Spinner from "./Spinner";
 const Feed = () => {
   console.log("cateory page");
-  const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
+  // // const [error, setError] = useState(false);
 
   const [pins, setPins] = useState(false);
   console.log(pins);
@@ -25,14 +25,18 @@ const Feed = () => {
   console.log("FeedCategory:", FeedCategory);
 
   useEffect(() => {
-    if (FeedCategory?.length !== 0) {
+    setLoading(true);
+    if (categoryId) {
+      console.log(categoryId);
       setPins(FeedCategory);
+      setLoading(false);
     } else {
       setPins(Feed);
+      setLoading(false);
     }
-  }, [FeedCategory, Feed]);
-  if (loading)
-    return <Spinner message="we are adding new ideaas to your feed!" />;
+  }, [categoryId, Feed, FeedCategory]);
+  if (loading || isFetching)
+    return <Spinner message="we are adding new ideas to your feed!" />;
   if (!pins?.length)
     return <h1 className="text-center font-semibold">No Pins Available</h1>;
   // if (error) return <Error />;
