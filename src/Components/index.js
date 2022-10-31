@@ -8,6 +8,7 @@ import Search from "./Search";
 import Feed from "./Feed";
 import MasonryLayout from "./MasonryLayout";
 import Spinner from "./Spinner";
+import Pin from "./Pin";
 
 export {
   Profile,
@@ -20,4 +21,5 @@ export {
   Navbar,
   MasonryLayout,
   Spinner,
+  Pin,
 };
