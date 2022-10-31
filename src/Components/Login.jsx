@@ -4,7 +4,7 @@ import GoogleButton from "react-google-button";
 import share from "../assets/share.mp4";
 import logo from "../assets/logowhite.png";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   GoogleAuthProvider,
   signInWithPopup,
@@ -20,9 +20,11 @@ import {
   serverTimestamp,
   setDoc,
 } from "firebase/firestore";
+import { setUser } from "../Redux/Features/UserSlice";
 
 const Login = ({}) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const googleSignIn = () => {
     const provider = new GoogleAuthProvider();
@@ -32,7 +34,7 @@ const Login = ({}) => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
         // The signed-in user info.
-        const user = result.user.providerData;
+        const user = result.user.providerData[0];
         localStorage.setItem("user", JSON.stringify(user));
         const { displayName, email, photoURL, uid } =
           result.user.providerData[0];
@@ -45,9 +47,10 @@ const Login = ({}) => {
           if (docSnap.exists()) {
             console.log("Document data:", docSnap.data());
             navigate("/");
+            dispatch(setUser(user));
           } else {
             console.log("No such document! so Creating");
-            const setUser = await setDoc(doc(db, "Users", `${uid}`), {
+            await setDoc(doc(db, "Users", `${uid}`), {
               name: displayName,
               email: email,
               image: photoURL,
@@ -56,6 +59,7 @@ const Login = ({}) => {
             });
             console.log("user was created");
             navigate("/");
+            // dispatch(setUser(user));
           }
         }
       })
