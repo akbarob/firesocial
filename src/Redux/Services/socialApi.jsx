@@ -13,6 +13,7 @@ import {
   getDoc,
   getDocs,
   onSnapshot,
+  orderBy,
   query,
   serverTimestamp,
   setDoc,
@@ -49,7 +50,48 @@ export const socialApi = createApi({
         }
       },
     }),
+    getFeed: builder.query({
+      async queryFn() {
+        try {
+          const q = query(collection(db, "Pins"), orderBy("createdAT", "desc"));
+          const querySnapshot = await getDocs(q);
+          let pins = [];
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const _id = doc.id;
+            pins.push({ _id, ...data });
+            console.log(pins);
+          });
+          return { data: pins };
+        } catch (err) {
+          console.log("error getting user:", err);
+        }
+      },
+    }),
+    getFeedByCategory: builder.query({
+      async queryFn(categoryId) {
+        try {
+          const q = query(
+            collection(db, "Pins"),
+            where("category", "==", `${categoryId}`),
+            orderBy("createdAT", "desc")
+          );
+          const docSnap = await getDocs(q);
+          let pins = [];
+          docSnap.forEach((doc) => {
+            const data = doc.data();
+            const _id = doc.id;
+            pins.push({ _id, ...data });
+            console.log("FeedByCategory", pins);
+          });
+          return { data: pins };
+        } catch (err) {
+          console.log("error getting FeedByCategory:", err);
+        }
+      },
+    }),
   }),
 });
 
-export const { useGetUsersQuery } = socialApi;
+export const { useGetUsersQuery, useGetFeedQuery, useGetFeedByCategoryQuery } =
+  socialApi;

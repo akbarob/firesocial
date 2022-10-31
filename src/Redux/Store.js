@@ -6,9 +6,10 @@ import userReducer from "./Features/UserSlice";
 export const store = configureStore({
   reducer: { [socialApi.reducerPath]: socialApi.reducer, user: userReducer },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ serializableCheck: false }).concat(
-      socialApi.middleware
-    ),
+    getDefaultMiddleware({
+      serializableCheck: false,
+      immutableCheck: false,
+    }).concat(socialApi.middleware),
 });
 
 setupListeners(store.dispatch);

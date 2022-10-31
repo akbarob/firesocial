@@ -6,7 +6,6 @@ import { categories } from "../utils/data";
 // import { GoogleLogout } from "react-google-login";
 
 const Sidebar = ({ user, closeToggle }) => {
-  console.log(categories);
   const logout = (res) => {
     console.log("response:", res);
     navigate("/login");
