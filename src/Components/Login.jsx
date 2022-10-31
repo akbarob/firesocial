@@ -87,7 +87,7 @@ const Login = ({}) => {
         <div className="p-5 justify-center">
           <img src={logo} className="w-[130px]" alt="logo" />
         </div>
-        <div claclassName="mt-20">
+        <div className="mt-20">
           {" "}
           <GoogleButton onClick={googleSignIn} />
         </div>
