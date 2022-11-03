@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { MdDownloadForOffline } from "react-icons/md";
 import { AiTwotoneDelete } from "react-icons/ai";
 import { BsFillArrowRightCircleFill } from "react-icons/bs";
-import { fetchUser } from "../Utils/fetchUser";
 import {
   useGetFeedQuery,
   useSavePostMutation,
