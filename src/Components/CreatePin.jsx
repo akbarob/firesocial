@@ -10,12 +10,12 @@ import { AiOutlineCloudUpload } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { db, storage } from "../Firebase/config";
-import { categories } from "../Utils/data";
-// import { fetchUser } from "../Utils/fetchUser";
+
 import Spinner from "./Spinner";
 import { useForm } from "react-hook-form";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { uuidv4 } from "@firebase/util";
+import { categories } from "../utils/data";
 
 const CreatePin = ({ user }) => {
   console.log(user);
