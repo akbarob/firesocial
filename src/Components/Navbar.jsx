@@ -27,6 +27,7 @@ const Navbar = ({ searchTerm, setSearchTerm, user }) => {
             className="w-14 h-14 rounded-full max-w-none"
           />
         </Link>
+
         <Link
           to="create-pin"
           className="rounded-lg bg-black text-white w-12 h-12 md:h-12 flex justify-center items-center "

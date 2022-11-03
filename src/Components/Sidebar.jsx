@@ -2,12 +2,14 @@ import React from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { RiHomeFill } from "react-icons/ri";
 import logo from "../assets/logo.png";
+import { IoLogOut, IoLogIn } from "react-icons/io5";
 import { categories } from "../utils/data";
 // import { GoogleLogout } from "react-google-login";
 
 const Sidebar = ({ user, closeToggle }) => {
+  const navigate = useNavigate();
   const logout = (res) => {
-    console.log("response:", res);
+    // console.log("response:", res);
     navigate("/login");
     localStorage.clear();
   };
@@ -31,7 +33,18 @@ const Sidebar = ({ user, closeToggle }) => {
           <img src={logo} alt="logo" />
         </Link>
       </div>
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-5 relative">
+        {!user && (
+          <button
+            className=" absolute -top-6 right-5 mr-4 bg-red-500 text-white rounded-lg px-4 py-3 my-5 shadow-lg flex items-center "
+            onClick={() => {
+              navigate("/login");
+            }}
+          >
+            Login <IoLogIn size={20} className="ml-2 -mb-0.5" />
+          </button>
+        )}
+
         <NavLink
           to="/"
           className={({ isActive }) =>
@@ -62,18 +75,26 @@ const Sidebar = ({ user, closeToggle }) => {
         ))}
       </div>
       {user && (
-        <Link
-          to={`user-profile/${user._id}`}
-          className="flex my-5 gap-2 items-center bg-white rounded-md shadow-lg mx-4"
-          onClickCapture={handleCloseSidebar}
-        >
-          <img
-            src={user.image}
-            className="w-10 h-10 rounded-full"
-            alt="user-image"
-          />
-          <p className="text-black font-semibold">{user.userName}</p>
-        </Link>
+        <div className="flex justify-between items-center">
+          <Link
+            to={`user-profile/${user._id}`}
+            className="flex my-5 gap-2 items-center bg-white rounded-md shadow-lg mx-4"
+            onClickCapture={handleCloseSidebar}
+          >
+            <img
+              src={user?.image}
+              className="w-10 h-10 rounded-full"
+              alt="user_pic"
+            />
+            <p className="text-black font-semibold">{user?.name}</p>
+          </Link>
+          <button
+            className="mr-4 bg-red-500 text-white rounded-lg px-4 py-3 my-5 shadow-lg flex items-center "
+            onClick={logout}
+          >
+            Logout <IoLogOut size={20} className="ml-2 -mb-0.5" />
+          </button>
+        </div>
       )}
       {user && <div></div>}
     </div>

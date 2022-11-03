@@ -1,3 +1,4 @@
+import { uuidv4 } from "@firebase/util";
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
   GoogleAuthProvider,
@@ -8,6 +9,8 @@ import {
 import { getAuth } from "firebase/auth";
 import {
   addDoc,
+  arrayRemove,
+  arrayUnion,
   collection,
   doc,
   getDoc,
@@ -17,6 +20,7 @@ import {
   query,
   serverTimestamp,
   setDoc,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
@@ -26,15 +30,17 @@ import { setUser } from "../Features/UserSlice";
 export const socialApi = createApi({
   reducerPath: "socialApi",
   baseQuery: fakeBaseQuery(),
+  tagTypes: ["Post", "User"],
   endpoints: (builder) => ({
     getUsers: builder.query({
       async queryFn() {
         const userInfo = fetchUser();
-        // console.log(user);
+        // console.log(userInfo);
+
         try {
           const q = query(
             collection(db, "Users"),
-            where("_id", "==", userInfo.uid)
+            where("_id", "==", userInfo?.uid)
           );
           const querySnapshot = await getDocs(q);
           let user = [];
@@ -49,11 +55,12 @@ export const socialApi = createApi({
           console.log("error getting user:", err);
         }
       },
+      providesTags: ["User"],
     }),
     getFeed: builder.query({
       async queryFn() {
         try {
-          const q = query(collection(db, "Pins"), orderBy("createdAT", "desc"));
+          const q = query(collection(db, "Pins"), orderBy("createdAt", "desc"));
           const querySnapshot = await getDocs(q);
           let pins = [];
           querySnapshot.forEach((doc) => {
@@ -64,9 +71,10 @@ export const socialApi = createApi({
           });
           return { data: pins };
         } catch (err) {
-          console.log("error getting user:", err);
+          console.log("error getting pins:", err);
         }
       },
+      providesTags: ["Post"],
     }),
     getFeedByCategory: builder.query({
       async queryFn(categoryId) {
@@ -74,7 +82,7 @@ export const socialApi = createApi({
           const q = query(
             collection(db, "Pins"),
             where("category", "==", `${categoryId}`),
-            orderBy("createdAT", "desc")
+            orderBy("createdAt", "desc")
           );
           const docSnap = await getDocs(q);
           let pins = [];
@@ -89,9 +97,144 @@ export const socialApi = createApi({
           console.log("error getting FeedByCategory:", err);
         }
       },
+      providesTags: ["Post"],
+    }),
+    getFeedBySearch: builder.query({
+      async queryFn(searchTerm) {
+        try {
+          const q = query(
+            collection(db, "Pins"),
+            where("category", ">=", `${searchTerm}`),
+            orderBy("category", "desc")
+          );
+          const docSnap = await getDocs(q);
+          let pins = [];
+          docSnap.forEach((doc) => {
+            const data = doc.data();
+            const _id = doc.id;
+            pins.push({ _id, ...data });
+            console.log("FeedBySearch", pins);
+          });
+          return { data: pins };
+        } catch (err) {
+          console.log("error getting FeedByCategory:", err);
+        }
+      },
+    }),
+
+    savePost: builder.mutation({
+      queryFn({ _id, userId }) {
+        console.log({ _id, userId });
+        try {
+          const pinRef = doc(db, "Pins", `${_id}`);
+          updateDoc(pinRef, {
+            save: arrayUnion(`${userId}`),
+          });
+
+          console.log(`saved ${userId} in ${_id}`);
+          // window.location.reload();
+        } catch (err) {
+          console.log("error updating pin:", err);
+        }
+        return { data: "saved" };
+      },
+      invalidatesTags: ["Post"],
+    }),
+    unSavePost: builder.mutation({
+      queryFn({ _id, userId }) {
+        console.log({ _id, userId });
+        try {
+          const pinRef = doc(db, "Pins", `${_id}`);
+          updateDoc(pinRef, {
+            save: arrayRemove(`${userId}`),
+          });
+          console.log(`Unsaved ${userId} in ${_id}`);
+          // window.location.reload();
+        } catch (err) {
+          console.log("error updating pin:", err);
+        }
+        return { data: "unsaved" };
+      },
+      invalidatesTags: ["Post"],
+    }),
+    getPinDetail: builder.query({
+      async queryFn(_id) {
+        try {
+          const docRef = doc(db, "Pins", `${_id}`);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            console.log("doc data:", docSnap.data());
+          } else {
+            console.log("No such document!");
+          }
+          return { data: docSnap.data() };
+        } catch (err) {
+          console.log(`error fetching Pin: ${_id}`, err);
+        }
+      },
+      providesTags: ["Post"],
+    }),
+    getMorePinDetails: builder.query({
+      async queryFn({ category, morePin }) {
+        console.log(category, morePin);
+        try {
+          const q = query(
+            collection(db, "Pins"),
+            where("category", "==", `${category}`),
+            where("pinId", "!=", `${morePin}`)
+            // orderBy("Document ID", "desc")
+          );
+          const docSnap = await getDocs(q);
+          let pins = [];
+          docSnap.forEach((doc) => {
+            const data = doc.data();
+            const _id = doc.id;
+            pins.push({ _id, ...data });
+            console.log("MorePinDetails", pins);
+          });
+          return { data: pins };
+        } catch (err) {
+          console.log("error getting MorePinDetails:", err);
+        }
+      },
+      providesTags: ["Post"],
+    }),
+    addComment: builder.mutation({
+      async queryFn({ _id, comment, userId }) {
+        console.log(_id, userId, comment);
+
+        try {
+          const userRef = doc(db, `Users/${userId}`);
+          const userSnap = await getDoc(userRef);
+          console.log(userSnap.data());
+          const pinRef = doc(db, "Pins", `${_id}`);
+          updateDoc(pinRef, {
+            comments: arrayUnion({
+              comment,
+              _key: uuidv4(),
+              postedBy: userSnap.data(),
+            }),
+          });
+          console.log(`comment posted in pins/${_id}`);
+          // window.location.reload();
+        } catch (err) {
+          console.log("error posting comment:", err);
+        }
+        return { data: "comment posted" };
+      },
+      invalidatesTags: ["Post"],
     }),
   }),
 });
 
-export const { useGetUsersQuery, useGetFeedQuery, useGetFeedByCategoryQuery } =
-  socialApi;
+export const {
+  useGetUsersQuery,
+  useGetFeedQuery,
+  useGetFeedByCategoryQuery,
+  useGetFeedBySearchQuery,
+  useSavePostMutation,
+  useUnSavePostMutation,
+  useGetPinDetailQuery,
+  useGetMorePinDetailsQuery,
+  useAddCommentMutation,
+} = socialApi;

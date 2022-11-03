@@ -14,7 +14,8 @@ import { categories } from "../Utils/data";
 // import { fetchUser } from "../Utils/fetchUser";
 import Spinner from "./Spinner";
 import { useForm } from "react-hook-form";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { uuidv4 } from "@firebase/util";
 
 const CreatePin = ({ user }) => {
   console.log(user);
@@ -65,7 +66,7 @@ const CreatePin = ({ user }) => {
     };
   }, [imageFile]);
 
-  const uploadPin = async () => {
+  const uploadPin = async (downloadURL) => {
     console.log(`next to Uploading Pin now `);
 
     if (title && about && destination && imageFile && category) {
@@ -74,12 +75,11 @@ const CreatePin = ({ user }) => {
         title,
         destination,
         about,
-        image: imageUrl.img,
+        image: downloadURL,
         userId: user._id,
-        postedBy: {
-          _id: user._id,
-        },
+        postedBy: [{ _id: user._id, image: user.image, name: user.name }],
         category,
+        createdAt: serverTimestamp(),
       });
       console.log(` Pin has been uploaded image `);
       setText("Upload");
@@ -95,9 +95,9 @@ const CreatePin = ({ user }) => {
 
   const uploadImage = (e) => {
     // Upload file and metadata to the object 'images/mountains.jpg'
-
+    setText("Uploading...");
     console.log(` Uploading image `);
-    const storageRef = ref(storage, `images/${imageFile.name}`);
+    const storageRef = ref(storage, `images/${imageFile.name + uuidv4()} `);
     const uploadTask = uploadBytesResumable(storageRef, imageFile);
 
     // Listen for state changes, errors, and completion of the upload.
@@ -140,7 +140,7 @@ const CreatePin = ({ user }) => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           console.log("File available at", downloadURL);
           setImageUrl({ img: downloadURL });
-          uploadPin();
+          uploadPin(downloadURL);
         });
       }
     );
@@ -192,7 +192,7 @@ const CreatePin = ({ user }) => {
                 {imagePreview ? (
                   <div>
                     {" "}
-                    <img src={imagePreview} className="h-[300px] w-full" />{" "}
+                    <img src={imagePreview} className="h-[50%] w-[50%]" />{" "}
                     <p>{imageFile.name}</p>
                   </div>
                 ) : null}
