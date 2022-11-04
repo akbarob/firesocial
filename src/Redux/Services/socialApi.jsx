@@ -36,7 +36,7 @@ export const socialApi = createApi({
     getUsers: builder.query({
       async queryFn() {
         const userInfo = fetchUser();
-        // console.log(userInfo);
+        console.log(userInfo);
 
         try {
           const q = query(
@@ -163,11 +163,15 @@ export const socialApi = createApi({
           const docRef = doc(db, "Pins", `${_id}`);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
-            console.log("doc data:", docSnap.data());
+            // let pins = [];
+            const data = docSnap.data();
+            const _id = docSnap.id;
+            // pins.push({ _id, ...data });
+            // console.log("doc data:", pins);
+            return { data: { _id, ...data } };
           } else {
             console.log("No such document!");
           }
-          return { data: docSnap.data() };
         } catch (err) {
           console.log(`error fetching Pin: ${_id}`, err);
         }
@@ -180,8 +184,7 @@ export const socialApi = createApi({
         try {
           const q = query(
             collection(db, "Pins"),
-            where("category", "==", `${category}`),
-            where("pinId", "!=", `${morePin}`)
+            where("category", "==", `${category}`)
             // orderBy("Document ID", "desc")
           );
           const docSnap = await getDocs(q);

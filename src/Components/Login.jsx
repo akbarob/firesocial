@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 
 import GoogleButton from "react-google-button";
 import share from "../assets/share.mp4";
@@ -73,21 +73,31 @@ const Login = ({}) => {
         // ...
       });
   };
+  const ref = useRef(null);
+  const loop = () => {
+    ref.current.play();
+  };
+
+  const onEndedLoop = () => {
+    if (focus) loop(); // when ended check if its focused then loop
+  };
 
   return (
     <div className="flex flex-col justify-start items-center h-screen">
       <div className="relative w-full h-full">
         <video
+          ref={ref}
           src={share}
           type="video"
           loop
-          muted
-          controls={false}
+          muted={true}
+          aria-controls="false"
           autoPlay
-          className="w-full h-full object-cover"
+          onEnded={onEndedLoop}
+          className="w-full h-screen object-cover"
         />
       </div>
-      <div className="absolute top-0 bottom-0 right-0 left-0 bg-black/70  w-full h-full flex flex-col items-center justify-center">
+      <div className="absolute top-0 bottom-0 right-0 left-0 bg-black/70  w-full h-screen flex flex-col items-center justify-center">
         <div className="p-5 justify-center">
           <img src={logo} className="w-[130px]" alt="logo" />
         </div>

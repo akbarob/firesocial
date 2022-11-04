@@ -6,6 +6,8 @@ import { v4 as uuidv4 } from "uuid";
 import MasonryLayout from "./MasonryLayout";
 import Spinner from "./Spinner";
 import { IoCompassOutline } from "react-icons/io5";
+import { GrSend } from "react-icons/gr";
+import { IoMdSend } from "react-icons/io";
 import {
   useAddCommentMutation,
   useGetMorePinDetailsQuery,
@@ -23,8 +25,13 @@ const PinDetails = ({ user }) => {
   const { data: pinDetail, isFetching, error } = useGetPinDetailQuery(_id);
   console.log(pinDetail);
   const category = pinDetail?.category;
-  const morePin = pinDetail?.pinId;
-  const { data: morePins } = useGetMorePinDetailsQuery({ category, morePin });
+  const morePin = pinDetail?._id;
+  const { data: morePins } = useGetMorePinDetailsQuery({
+    category,
+    morePin,
+  });
+  const morePinsDetails = morePins?.filter((item) => item._id !== morePin);
+  console.log(morePinsDetails);
   // console.log(morePin, userId, comment);
   const [addComment, { isFetching: isUpdating }] = useAddCommentMutation();
 
@@ -34,7 +41,7 @@ const PinDetails = ({ user }) => {
 
   if (isFetching) return <Spinner message="Loading Details" />;
 
-  console.log(pinDetail);
+  console.log(morePins);
   return (
     <div className="flex flex-col">
       <div className="flex xl:flex-row flex-col m-auto bg-white  max-w-[1200px] border-[32px]">
@@ -130,7 +137,7 @@ const PinDetails = ({ user }) => {
               className={`bg-red-500 text-white rounded-full px-6 py-2 font-semibold text-base outline-none `}
               type="button"
             >
-              {isFetching ? "posting the comment..." : "post"}
+              {isFetching ? "posting the comment..." : <IoMdSend />}
             </button>
           </div>
         </div>
@@ -141,7 +148,7 @@ const PinDetails = ({ user }) => {
             {" "}
             More like this
           </h2>
-          <MasonryLayout pins={morePins} />
+          <MasonryLayout pins={morePinsDetails} />
         </>
       ) : (
         <Spinner message={`loading more pins`} />

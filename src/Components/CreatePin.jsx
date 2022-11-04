@@ -94,7 +94,7 @@ const CreatePin = ({ user }) => {
         about,
         image: downloadURL,
         userId: user._id,
-        postedBy: [{ _id: user._id, image: user.image, name: user.name }],
+        postedBy: { _id: user._id, image: user.image, name: user.name },
         category,
         createdAt: serverTimestamp(),
       });
