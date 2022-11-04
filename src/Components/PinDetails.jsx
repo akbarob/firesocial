@@ -61,7 +61,7 @@ const PinDetails = ({ user }) => {
             <h1 className="text-4xl font-bold break-words mt-3">
               {pinDetail?.title}
             </h1>
-            <p className="mt-3">{pinDetail.about}</p>
+            <p className="mt-3">{pinDetail?.about}</p>
           </div>
           <Link
             to={`user-profile/${pinDetail?._id}`}
@@ -89,8 +89,8 @@ const PinDetails = ({ user }) => {
                   className="w-10 h-10 rounded-full cursor-pointer"
                 />
                 <div className="flex flex-col">
-                  <p className="font-bold">{comment.postedBy?.userName}</p>
-                  <p className="">{comment.comment}</p>
+                  <p className="font-bold">{comment?.postedBy?.userName}</p>
+                  <p className="">{comment?.comment}</p>
                 </div>
               </div>
             ))}
@@ -108,7 +108,11 @@ const PinDetails = ({ user }) => {
                 />
               </Link>
             )}
-            {!user && <p>Login in to Comment</p>}
+            {!user && (
+              <p className="text-base text text-red-400 flex items-center">
+                Login in to Comment
+              </p>
+            )}
             <input
               className="flex-1 border-gray-100 outline-none border-2 p-2 focus:border-gray-300 rounded-lg"
               type={`text`}
@@ -135,7 +139,7 @@ const PinDetails = ({ user }) => {
         <>
           <h2 className="text-center font-bold text-2x mt-8 mb-4 ">
             {" "}
-            more like this
+            More like this
           </h2>
           <MasonryLayout pins={morePins} />
         </>

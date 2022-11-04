@@ -224,6 +224,49 @@ export const socialApi = createApi({
       },
       invalidatesTags: ["Post"],
     }),
+    getUserCreatedPin: builder.query({
+      async queryFn(userId) {
+        try {
+          const q = query(
+            collection(db, "Pins"),
+            where("userId", "==", `${userId}`)
+          );
+          const docSnap = await getDocs(q);
+          let pins = [];
+          docSnap.forEach((doc) => {
+            const data = doc.data();
+            const _id = doc.id;
+            pins.push({ _id, ...data });
+            console.log("UserCreated", pins);
+          });
+          return { data: pins };
+        } catch (err) {
+          console.log(err);
+        }
+        return { data: "userCreated" };
+      },
+    }),
+    getUserSavedPin: builder.query({
+      async queryFn(userId) {
+        try {
+          const q = query(
+            collection(db, "Pins"),
+            where("save", "array-contains", `${userId}`)
+          );
+          const docSnap = await getDocs(q);
+          let pins = [];
+          docSnap.forEach((doc) => {
+            const data = doc.data();
+            const _id = doc.id;
+            pins.push({ _id, ...data });
+            console.log("UserSaved", pins);
+          });
+          return { data: pins };
+        } catch (err) {
+          console.log(err);
+        }
+      },
+    }),
   }),
 });
 
@@ -237,4 +280,6 @@ export const {
   useGetPinDetailQuery,
   useGetMorePinDetailsQuery,
   useAddCommentMutation,
+  useGetUserCreatedPinQuery,
+  useGetUserSavedPinQuery,
 } = socialApi;

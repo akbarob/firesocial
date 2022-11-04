@@ -17,12 +17,8 @@ const Pin = ({ user, pin: { postedBy, image, destination, _id, save } }) => {
   const [savePost, { isLoading: isUpdating, error: savedError }] =
     useSavePostMutation();
   const [unSavePost, { error: Unsavederror }] = useUnSavePostMutation();
-  console.log(user);
-  // console.log(error);
-  // useEffect(() => {
-  //   fetchUser();
-  // }, []);
-  // const user = fetchUser();
+  // console.log(user);
+
   const userId = user?._id;
   // console.log(postedBy?._id, user);
   const alreadySaved = !!save?.filter((item) => item === user?._id)?.length;
