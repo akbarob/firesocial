@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import { HiMenu } from "react-icons/hi";
 import { AiFillCloseCircle } from "react-icons/ai";
-// import { AIFillCloseCirle } from "react-icons/ai";
+import { ReactComponent as FireLogo } from "../assets/colored-Firesocial.svg";
 
 import logo from "../assets/logo.png";
 import { useRef } from "react";
@@ -38,7 +38,7 @@ const Home = () => {
           />
 
           <Link to="/">
-            <img src={logo} alt="logo" className="w-28" />
+            <FireLogo className="h-10 " />
           </Link>
 
           <Link to={`user-profile/${user?._id}`}>
@@ -54,7 +54,7 @@ const Home = () => {
             <AiFillCloseCircle
               size={30}
               onClick={() => setToggleSidebar(!ToggleSidebar)}
-              className="cursor-pointer"
+              className="cursor-pointer fill-[#F31818]"
             />
           </div>
           <Sidebar user={user && user} closeToggle={setToggleSidebar} />
@@ -67,7 +67,10 @@ const Home = () => {
             element={<Profile user={user} />}
           />
           <Route path="/login" element={<Login />} />
-          <Route path="/*" element={<Pins user={user && user} />} />
+          <Route
+            path="/*"
+            element={<Pins user={user && user} isFetching={isFetching} />}
+          />
         </Routes>
       </div>
     </div>

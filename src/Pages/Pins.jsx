@@ -7,7 +7,7 @@ import Feed from "../Components/Feed";
 import PinDetails from "../Components/PinDetails";
 import Search from "../Components/Search";
 
-const Pins = ({ user }) => {
+const Pins = ({ user, isFetching }) => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   return (
@@ -20,10 +20,10 @@ const Pins = ({ user }) => {
         />
       </div>
       <div className=" w-full relative justify-center items-center flex">
-        {!user && (
+        {!user && !isFetching && (
           <div className="absolute flex justify-center">
             <button
-              className="flex fixed bg-red-500 p-6 rounded-full shadow-2xl opacity-50 hover:opacity-100 transition-all duration-150  z-50 "
+              className="flex fixed bottom-10 items-center bg-red-500 p-6 rounded-full shadow-2xl opacity-50 hover:opacity-100 transition-all duration-150  z-50 "
               onClick={() => {
                 navigate("/login");
               }}
@@ -46,7 +46,11 @@ const Pins = ({ user }) => {
           <Route
             path="/search"
             element={
-              <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+              <Search
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                user={user}
+              />
             }
           />
         </Routes>

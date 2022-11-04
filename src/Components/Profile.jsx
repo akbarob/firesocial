@@ -16,9 +16,9 @@ const Profile = ({ user }) => {
   const navigate = useNavigate();
   const { userId } = useParams();
 
-  const [pins, setPins] = useState(null);
-  const [text, setText] = useState("saved");
-  const [activeBtn, setActiveBtn] = useState("saved");
+  const [pins, setPins] = useState([]);
+  const [text, setText] = useState("created");
+  const [activeBtn, setActiveBtn] = useState("created");
   const { data: Saved } = useGetUserSavedPinQuery(userId);
   // console.log(Saved);
   const { data: Created } = useGetUserCreatedPinQuery(userId);
@@ -27,6 +27,7 @@ const Profile = ({ user }) => {
   // get random image from unsplash
   console.log("text:", text);
   console.log("saved", Saved);
+  console.log(pins);
   useEffect(() => {
     if (text === "created") {
       setPins(Created);
@@ -36,7 +37,7 @@ const Profile = ({ user }) => {
       console.log("useEffect ran");
     }
     console.log(pins);
-  }, [text]);
+  }, [text, Saved, Created]);
   const randomImage =
     "https://source.unsplash.com/1600x900/?nature,sport,technology";
 
@@ -99,7 +100,7 @@ const Profile = ({ user }) => {
           </div>
           {pins?.length ? (
             <div className="px-2">
-              <MasonryLayout pins={pins} />
+              <MasonryLayout pins={pins} user={user} />
             </div>
           ) : (
             <div className="flex justify-center font-bold items-center text-xl w-full mt-2 ">
@@ -109,7 +110,6 @@ const Profile = ({ user }) => {
           )}
         </div>
       </div>
-      Profile
     </div>
   );
 };

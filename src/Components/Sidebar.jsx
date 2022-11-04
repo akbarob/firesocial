@@ -4,6 +4,7 @@ import { RiHomeFill } from "react-icons/ri";
 import logo from "../assets/logo.png";
 import { IoLogOut, IoLogIn } from "react-icons/io5";
 import { categories } from "../utils/data";
+import { ReactComponent as FireLogo } from "../assets/colored-Firesocial.svg";
 // import { GoogleLogout } from "react-google-login";
 
 const Sidebar = ({ user, closeToggle }) => {
@@ -20,7 +21,7 @@ const Sidebar = ({ user, closeToggle }) => {
   const isNotActiveStyle =
     "flex items-center px-5 gap-3 text-gray-500 hover:text-black transition-all duration 200 ease-in-out capitalize";
   const isActiveStyle =
-    "flex items-center px-5 gap-3 font-extrabold border-r-2 border-black transition-all duration 200 ease-in-out capitalize";
+    "flex items-center px-5 gap-3 font-extrabold border-r-2 border-black transition-all duration 200 ease-in-out capitalize text-[#447EEF] border-[#447EEF]";
 
   return (
     <div className="flex flex-col justify-between bg-white h-full overflow-y-auto min-w-210 hide-scrollbar">
@@ -30,7 +31,7 @@ const Sidebar = ({ user, closeToggle }) => {
           to="/"
           onClickCapture={handleCloseSidebar}
         >
-          <img src={logo} alt="logo" />
+          <FireLogo className="w-22 h-20" />
         </Link>
       </div>
       <div className="flex flex-col gap-5 relative">

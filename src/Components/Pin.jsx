@@ -20,7 +20,7 @@ const Pin = ({ user, pin: { postedBy, image, destination, _id, save } }) => {
   // console.log(user);
 
   const userId = user?._id;
-  // console.log(postedBy?._id, user);
+  console.log(postedBy?._id, user);
   const alreadySaved = !!save?.filter((item) => item === user?._id)?.length;
   // console.log(alreadySaved);
   const DeletePin = (id) => {
@@ -30,7 +30,7 @@ const Pin = ({ user, pin: { postedBy, image, destination, _id, save } }) => {
   };
   if (isFetching) return <Spinner message={`loading Image`} />;
   return (
-    <div className="m-2">
+    <div className="m-2 ">
       <div
         onMouseEnter={() => setPostHoverd(true)}
         onMouseLeave={() => setPostHoverd(false)}
