@@ -35,7 +35,6 @@ const Login = ({}) => {
       progress: undefined,
       theme: "light",
     });
-    console.log("toats");
   };
   const navigate = useNavigate();
   const dispatch = useDispatch();

@@ -15,7 +15,6 @@ import { auth } from "../Firebase/config";
 import { signOut } from "firebase/auth";
 
 const Profile = ({ user }) => {
-  // console.log(user);
   const navigate = useNavigate();
   const { userId } = useParams();
 
@@ -23,14 +22,8 @@ const Profile = ({ user }) => {
   const [text, setText] = useState("created");
   const [activeBtn, setActiveBtn] = useState("created");
   const { data: Saved } = useGetUserSavedPinQuery(userId);
-  // console.log(Saved);
   const { data: Created } = useGetUserCreatedPinQuery(userId);
-  // const { data: feed } = useGetFeedQuery();
-  // console.log(feed);
   // get random image from unsplash
-  console.log("text:", text);
-  console.log("saved", Saved);
-  console.log(pins);
 
   const logout = () => {
     signOut(auth)

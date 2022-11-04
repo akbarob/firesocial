@@ -36,7 +36,6 @@ export const socialApi = createApi({
     getUsers: builder.query({
       async queryFn() {
         const userInfo = fetchUser();
-        console.log(userInfo);
 
         try {
           const q = query(
@@ -68,7 +67,7 @@ export const socialApi = createApi({
             const data = doc.data();
             const _id = doc.id;
             pins.push({ _id, ...data });
-            console.log(pins);
+            // console.log(pins);
           });
           return { data: pins };
         } catch (err) {
@@ -91,7 +90,7 @@ export const socialApi = createApi({
             const data = doc.data();
             const _id = doc.id;
             pins.push({ _id, ...data });
-            console.log("FeedByCategory", pins);
+            // console.log("FeedByCategory", pins);
           });
           return { data: pins };
         } catch (err) {
@@ -114,7 +113,7 @@ export const socialApi = createApi({
             const data = doc.data();
             const _id = doc.id;
             pins.push({ _id, ...data });
-            console.log("FeedBySearch", pins);
+            // console.log("FeedBySearch", pins);
           });
           return { data: pins };
         } catch (err) {
@@ -124,15 +123,14 @@ export const socialApi = createApi({
     }),
     savePost: builder.mutation({
       queryFn({ _id, userId }) {
-        console.log({ _id, userId });
+        // console.log({ _id, userId });
         try {
           const pinRef = doc(db, "Pins", `${_id}`);
           updateDoc(pinRef, {
             save: arrayUnion(`${userId}`),
           });
 
-          console.log(`saved ${userId} in ${_id}`);
-          // window.location.reload();
+          // console.log(`saved ${userId} in ${_id}`);
         } catch (err) {
           console.log("error updating pin:", err);
         }
@@ -142,14 +140,13 @@ export const socialApi = createApi({
     }),
     unSavePost: builder.mutation({
       queryFn({ _id, userId }) {
-        console.log({ _id, userId });
+        // console.log({ _id, userId });
         try {
           const pinRef = doc(db, "Pins", `${_id}`);
           updateDoc(pinRef, {
             save: arrayRemove(`${userId}`),
           });
-          console.log(`Unsaved ${userId} in ${_id}`);
-          // window.location.reload();
+          // console.log(`Unsaved ${userId} in ${_id}`);
         } catch (err) {
           console.log("error updating pin:", err);
         }
@@ -163,11 +160,9 @@ export const socialApi = createApi({
           const docRef = doc(db, "Pins", `${_id}`);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
-            // let pins = [];
             const data = docSnap.data();
             const _id = docSnap.id;
-            // pins.push({ _id, ...data });
-            // console.log("doc data:", pins);
+
             return { data: { _id, ...data } };
           } else {
             console.log("No such document!");
@@ -180,12 +175,11 @@ export const socialApi = createApi({
     }),
     getMorePinDetails: builder.query({
       async queryFn({ category, morePin }) {
-        console.log(category, morePin);
+        // console.log(category, morePin);
         try {
           const q = query(
             collection(db, "Pins"),
             where("category", "==", `${category}`)
-            // orderBy("Document ID", "desc")
           );
           const docSnap = await getDocs(q);
           let pins = [];
@@ -193,7 +187,7 @@ export const socialApi = createApi({
             const data = doc.data();
             const _id = doc.id;
             pins.push({ _id, ...data });
-            console.log("MorePinDetails", pins);
+            // console.log("MorePinDetails", pins);
           });
           return { data: pins };
         } catch (err) {
@@ -204,12 +198,12 @@ export const socialApi = createApi({
     }),
     addComment: builder.mutation({
       async queryFn({ _id, comment, userId }) {
-        console.log(_id, userId, comment);
+        // console.log(_id, userId, comment);
 
         try {
           const userRef = doc(db, `Users/${userId}`);
           const userSnap = await getDoc(userRef);
-          console.log(userSnap.data());
+          // console.log(userSnap.data());
           const pinRef = doc(db, "Pins", `${_id}`);
           updateDoc(pinRef, {
             comments: arrayUnion({
@@ -218,8 +212,7 @@ export const socialApi = createApi({
               postedBy: userSnap.data(),
             }),
           });
-          console.log(`comment posted in pins/${_id}`);
-          // window.location.reload();
+          // console.log(`comment posted in pins/${_id}`);
         } catch (err) {
           console.log("error posting comment:", err);
         }
@@ -240,7 +233,7 @@ export const socialApi = createApi({
             const data = doc.data();
             const _id = doc.id;
             pins.push({ _id, ...data });
-            console.log("UserCreated", pins);
+            // console.log("UserCreated", pins);
           });
           return { data: pins };
         } catch (err) {
@@ -262,7 +255,7 @@ export const socialApi = createApi({
             const data = doc.data();
             const _id = doc.id;
             pins.push({ _id, ...data });
-            console.log("UserSaved", pins);
+            // console.log("UserSaved", pins);
           });
           return { data: pins };
         } catch (err) {
@@ -271,10 +264,10 @@ export const socialApi = createApi({
       },
     }),
     DeletePin: builder.mutation({
-      async queryFn(pinId) {
+      async queryFn(_id) {
         try {
-          await deleteDoc(doc(db, "Pins", pinId));
-          console.log("Pin deleted-:", pinId);
+          await deleteDoc(doc(db, "Pins", _id));
+          // console.log("Pin deleted-:", _id);
           return { data: "Pin deleted" };
         } catch (err) {
           console.log(err);
@@ -284,13 +277,13 @@ export const socialApi = createApi({
     }),
     CreatePin: builder.mutation({
       async queryFn({ downloadURL, title, about, user, category }) {
-        console.log("UploadPin Mutation:", {
-          downloadURL,
-          title,
-          about,
-          user,
-          category,
-        });
+        // console.log("UploadPin Mutation:", {
+        //   downloadURL,
+        //   title,
+        //   about,
+        //   user,
+        //   category,
+        // });
         try {
           const docRef = await addDoc(collection(db, "Pins"), {
             title,

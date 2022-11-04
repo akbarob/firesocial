@@ -10,18 +10,13 @@ import {
 import MasonryLayout from "./MasonryLayout";
 import Spinner from "./Spinner";
 const Feed = ({ user }) => {
-  console.log("cateory page");
   const [loading, setLoading] = useState(true);
-  // // const [error, setError] = useState(false);
 
   const [pins, setPins] = useState(false);
-  // console.log(pins);
   const { categoryId } = useParams();
 
   const { data: Feed, isFetching, error } = useGetFeedQuery();
   const { data: FeedCategory } = useGetFeedByCategoryQuery(categoryId);
-  // console.log("feed:", Feed);
-  // console.log("FeedCategory:", FeedCategory);
 
   useEffect(() => {
     setLoading(true);

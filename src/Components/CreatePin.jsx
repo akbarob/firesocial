@@ -33,13 +33,10 @@ const CreatePin = ({ user }) => {
       progress: undefined,
       theme: "light",
     });
-    console.log("toats");
   };
 
-  console.log(user);
   const [title, setTitle] = useState("");
   const [about, setAbout] = useState("");
-  // const [destination, setDestination] = useState("");
   const [loading, setLoading] = useState(false);
   const [fields, setFields] = useState(false);
   const [category, setCategory] = useState(null);
@@ -52,10 +49,6 @@ const CreatePin = ({ user }) => {
   const navigate = useNavigate();
   const errorRef = useRef(null);
   const [CreatePin, { isLoading, error: UploadError }] = useCreatePinMutation();
-
-  // console.log(imagePreview);
-  console.log(imageFile);
-  console.log(imageUrl);
 
   const handleImageAsFile = (e) => {
     setLoading(true);
@@ -251,13 +244,7 @@ const CreatePin = ({ user }) => {
             placeholder="What is your pin about?"
             className="outline-none text-base sm:text-xl border-b-2 border-gray-200 p-2 "
           />
-          {/* <input
-            type="text"
-            value={destination}
-            onChange={(e) => setDestination(e.target.value)}
-            placeholder="Add a destination link"
-            className="outline-none text-base sm:text-xl border-b-2 border-gray-200 p-2 "
-          /> */}
+
           <div className="flex flex-col ">
             <p className="mb-2 font-semibold text-lg sm:text-xl ">
               Choose Pin category

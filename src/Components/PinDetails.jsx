@@ -23,7 +23,6 @@ const PinDetails = ({ user }) => {
   const _id = pinId;
   const userId = user?._id;
   const { data: pinDetail, isFetching, error } = useGetPinDetailQuery(_id);
-  console.log(pinDetail);
   const category = pinDetail?.category;
   const morePin = pinDetail?._id;
   const { data: morePins } = useGetMorePinDetailsQuery({
@@ -31,17 +30,10 @@ const PinDetails = ({ user }) => {
     morePin,
   });
   const morePinsDetails = morePins?.filter((item) => item._id !== morePin);
-  console.log(morePinsDetails);
-  // console.log(morePin, userId, comment);
   const [addComment, { isFetching: isUpdating }] = useAddCommentMutation();
-
-  // const [pinDetail, setpinDetail] = useState(null);
-
-  console.log(user);
 
   if (isFetching) return <Spinner message="Loading Details" />;
 
-  console.log(morePins);
   return (
     <div className="flex flex-col">
       <div className="flex xl:flex-row flex-col m-auto bg-white  max-w-[1200px] border-[32px]">
@@ -127,7 +119,6 @@ const PinDetails = ({ user }) => {
               value={comment}
               onChange={(e) => setcomment(e.target.value)}
             />
-            {console.log("comment:", comment)}
             <button
               disabled={!user || !comment}
               onClick={() => {
@@ -142,7 +133,6 @@ const PinDetails = ({ user }) => {
           </div>
         </div>
       </div>
-      {console.log("more:", morePins)}
       {morePinsDetails?.length > 0 ? (
         <>
           <h2 className="text-center font-bold text-2x mt-8 mb-4 ">

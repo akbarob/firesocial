@@ -15,10 +15,7 @@ import Spinner from "./Spinner";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const Pin = ({
-  user,
-  pin: { postedBy, image, destination, _id, save, pinId },
-}) => {
+const Pin = ({ user, pin: { postedBy, image, destination, _id, save } }) => {
   const notify = () => {
     toast.success("Deleted Post !", {
       position: "top-center",
@@ -30,21 +27,16 @@ const Pin = ({
       progress: undefined,
       theme: "light",
     });
-    console.log("toats");
   };
-  console.log(pinId);
   const { data: Feed, isFetching, error: feederror } = useGetFeedQuery();
   const navigate = useNavigate();
   const [postHovered, setPostHoverd] = useState(false);
   const [savePost, { isLoading: isUpdating, error: savedError }] =
     useSavePostMutation();
   const [unSavePost, { error: Unsavederror }] = useUnSavePostMutation();
-  // console.log(user);
 
   const userId = user?._id;
-  console.log(postedBy?._id, user);
   const alreadySaved = !!save?.filter((item) => item === user?._id)?.length;
-  // console.log(alreadySaved);
   const [DeletePin, { isLoading }] = useDeletePinMutation();
 
   if (isFetching) return <Spinner message={`loading Image`} />;
@@ -115,13 +107,12 @@ const Pin = ({
                     : destination}
                 </a>
               )}
-              {console.log(postedBy?._id, user?._id)}
               {postedBy?._id === user?._id && (
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     notify();
-                    DeletePin(pinId);
+                    DeletePin(_id);
                   }}
                   type="button"
                   className="bg-white opacity-70 hover:bg-red-500 text-black hover:text-white font-bold px-5 py-1 text-base rounded-3xl hover:shadow-md outline-none flex items-center"
@@ -143,7 +134,6 @@ const Pin = ({
             className="w-8 h-8 rounded-full  object-cover"
             alt="userprofile"
           />
-          {console.log(postedBy)}
           <p className="font-bold capitalize">{postedBy?.name}</p>
         </Link>
       )}
