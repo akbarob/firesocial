@@ -10,6 +10,9 @@ import {
   useGetUserCreatedPinQuery,
   useGetUserSavedPinQuery,
 } from "../Redux/Services/socialApi";
+import { toast } from "react-toastify";
+import { auth } from "../Firebase/config";
+import { signOut } from "firebase/auth";
 
 const Profile = ({ user }) => {
   // console.log(user);
@@ -28,6 +31,31 @@ const Profile = ({ user }) => {
   console.log("text:", text);
   console.log("saved", Saved);
   console.log(pins);
+
+  const logout = () => {
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+        navigate("/login");
+        localStorage.clear();
+        toast.success("Logged out !", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        // An error happened.
+      });
+    // console.log("response:", res);
+  };
+
   useEffect(() => {
     if (text === "created") {
       setPins(Created);
@@ -62,14 +90,14 @@ const Profile = ({ user }) => {
             />
             <h1 className="font-bold text-3xl text-center mt-3"></h1>
             <div className="absolute z-10  top-0 right-0">
-              {/* {user && (
-                <GoogleLogout
-                  clientId={import.meta.env.VITE_APP_GOOGLE_CLIENT_ID}
-                  buttonText="Logout"
-                  onLogoutSuccess={logout}
-                  className="w-full rounded-md shadow-lg mx-5 my-5"
-                />
-              )} */}
+              {user && (
+                <button
+                  className="p-2 bg-red-500 rounded-full text-white mt-2"
+                  onClick={logout}
+                >
+                  Log out
+                </button>
+              )}
             </div>
           </div>
           <div className="text-center mb-7">

@@ -70,18 +70,18 @@ const PinDetails = ({ user }) => {
             </h1>
             <p className="mt-3">{pinDetail?.about}</p>
           </div>
+          <h3 className="mt-5 mb-2 ">Posted By</h3>
           <Link
             to={`user-profile/${pinDetail?._id}`}
-            className="flex gap-2 mt-5 items-center bg-white rounded-lg"
+            className="flex gap-2  items-center bg-white rounded-lg"
           >
+            {" "}
             <img
               src={pinDetail?.postedBy.image}
               className="w-8 h-8 rounded-full  object-cover"
               alt="userprofile"
             />
-            <p className="font-bold capitalize">
-              {pinDetail?.postedBy.userName}
-            </p>
+            <p className="font-bold capitalize">{pinDetail?.postedBy.name}</p>
           </Link>{" "}
           <h2 className="mt-5 text-2xl">Comments</h2>
           <div className="max-h-370 overflow-y-auto">
@@ -142,7 +142,8 @@ const PinDetails = ({ user }) => {
           </div>
         </div>
       </div>
-      {morePins?.length > 0 ? (
+      {console.log("more:", morePins)}
+      {morePinsDetails?.length > 0 ? (
         <>
           <h2 className="text-center font-bold text-2x mt-8 mb-4 ">
             {" "}
@@ -151,7 +152,9 @@ const PinDetails = ({ user }) => {
           <MasonryLayout pins={morePinsDetails} />
         </>
       ) : (
-        <Spinner message={`loading more pins`} />
+        <h3 className="flex justify-center -mt-7">
+          No Pins with similar category
+        </h3>
       )}
     </div>
   );

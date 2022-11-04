@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 
 import GoogleButton from "react-google-button";
 import share from "../assets/share.mp4";
-import logo from "../assets/logowhite.png";
+import { ReactComponent as FireLogo } from "../assets/colored-Firesocial.svg";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -21,8 +21,22 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { setUser } from "../Redux/Features/UserSlice";
+import { toast } from "react-toastify";
 
 const Login = ({}) => {
+  const notify = () => {
+    toast.success("Logged succesfully !", {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    console.log("toats");
+  };
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -34,6 +48,7 @@ const Login = ({}) => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
         // The signed-in user info.
+        notify();
         const user = result.user.providerData[0];
         localStorage.setItem("user", JSON.stringify(user));
         const { displayName, email, photoURL, uid } =
@@ -74,16 +89,9 @@ const Login = ({}) => {
       });
   };
   const ref = useRef(null);
-  const loop = () => {
-    ref.current.play();
-  };
-
-  const onEndedLoop = () => {
-    if (focus) loop(); // when ended check if its focused then loop
-  };
 
   return (
-    <div className="flex flex-col justify-start items-center h-screen">
+    <div className="flex flex-col justify-start items-center h-full">
       <div className="relative w-full h-full">
         <video
           ref={ref}
@@ -92,14 +100,15 @@ const Login = ({}) => {
           loop
           muted={true}
           aria-controls="false"
+          controls={false}
           autoPlay
-          onEnded={onEndedLoop}
+          playsInline
           className="w-full h-screen object-cover"
         />
       </div>
       <div className="absolute top-0 bottom-0 right-0 left-0 bg-black/70  w-full h-screen flex flex-col items-center justify-center">
         <div className="p-5 justify-center">
-          <img src={logo} className="w-[130px]" alt="logo" />
+          <FireLogo className="h-20" />
         </div>
         <div className="mt-20">
           {" "}

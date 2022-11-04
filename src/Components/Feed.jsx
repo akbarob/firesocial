@@ -35,12 +35,17 @@ const Feed = ({ user }) => {
     }
   }, [categoryId, Feed, FeedCategory]);
   if (loading || isFetching)
-    return <Spinner message="we are adding new ideas to your feed!" />;
+    return <Spinner message="Adding new ideas to your feed!" />;
   if (!pins?.length)
-    return <h1 className="text-center font-semibold">No Pins Available</h1>;
+    return (
+      <div className="h-[80vh] flex items-center">
+        <h1 className="text-center font-semibold">No Pins Available</h1>
+      </div>
+    );
+
   // if (error) return <Error />;
   return (
-    <div className="mx-auto">
+    <div className="mx-auto h-full">
       {pins && <MasonryLayout pins={pins} user={user} />}
     </div>
   );

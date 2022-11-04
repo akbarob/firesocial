@@ -138,12 +138,12 @@ const Pin = ({
           to={`user-profile/${postedBy?._id}`}
           className="flex gap-2 mt-2 items-center"
         >
-          {" "}
           <img
             src={postedBy?.image}
             className="w-8 h-8 rounded-full  object-cover"
             alt="userprofile"
           />
+          {console.log(postedBy)}
           <p className="font-bold capitalize">{postedBy?.name}</p>
         </Link>
       )}

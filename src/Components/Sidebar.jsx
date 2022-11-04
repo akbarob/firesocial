@@ -5,14 +5,35 @@ import logo from "../assets/logo.png";
 import { IoLogOut, IoLogIn } from "react-icons/io5";
 import { categories } from "../utils/data";
 import { ReactComponent as FireLogo } from "../assets/colored-Firesocial.svg";
+import { toast } from "react-toastify";
+import { auth } from "../Firebase/config";
+import { signOut } from "firebase/auth";
 // import { GoogleLogout } from "react-google-login";
 
 const Sidebar = ({ user, closeToggle }) => {
   const navigate = useNavigate();
   const logout = (res) => {
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+        navigate("/login");
+        localStorage.clear();
+        toast.success("Logged out !", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        // An error happened.
+      });
     // console.log("response:", res);
-    navigate("/login");
-    localStorage.clear();
   };
   console.log(user);
   const handleCloseSidebar = () => {

@@ -11,7 +11,7 @@ const Pins = ({ user, isFetching }) => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   return (
-    <div className="px-2 md:px-5 mx-auto w-full">
+    <div className="px-2 md:px-5 mx-auto w-full h-full">
       <div className="bg-gray-50">
         <Navbar
           searchTerm={searchTerm}
