@@ -26,13 +26,13 @@ const Home = () => {
   // if (isFetching) return <Spinner messsage={"loading!!!!!!"} />;
   console.log(user);
   return (
-    <div className="relative flex bg-gray-50 md:flex-row flex-col h-screen transition-all duration-75 ease-out">
+    <div className="relative flex bg-gray-50 md:flex-row flex-col h-full transition-all duration-75 ease-out">
       <ToastContainer />
       <div className="hidden md:flex h-screen flex-initial">
         <Sidebar user={user} />
       </div>
-      <div className="flex md:hidden flex-row">
-        <div className="p-2 w-full flex flex-row justify-between items-center shadow-md">
+      <div className="flex md:hidden flex-row sticky top-0 z-50 backdrop-blur-sm">
+        <div className="p-2 w-full flex flex-row justify-between items-center shadow-md sticky top-0">
           <HiMenu
             className="cursor-pointer "
             size={40}
@@ -51,7 +51,7 @@ const Home = () => {
         </div>
       </div>
       {ToggleSidebar && (
-        <div className=" fixed w-4/5 bg-white h-screen overflow-y-auto shadow-md z-10 animate-slide-in md:hidden">
+        <div className=" fixed w-4/5 bg-white h-full overflow-y-auto shadow-md z-50 animate-slide-in md:hidden">
           <div className="absolute w-full flex justify-end">
             <AiFillCloseCircle
               size={30}

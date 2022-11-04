@@ -106,7 +106,7 @@ const PinDetails = ({ user }) => {
             {user && (
               <Link
                 to={`user-profile/${pinDetail?._id}`}
-                className="w-10 h-10 rounded-full cursor-pointer"
+                className="w-10 h-10 rounded-full cursor-pointer flex items-center"
               >
                 <img
                   src={user?.image}
@@ -134,7 +134,7 @@ const PinDetails = ({ user }) => {
                 addComment({ _id, userId, comment });
                 setcomment("");
               }}
-              className={`bg-red-500 text-white rounded-full px-6 py-2 font-semibold text-base outline-none `}
+              className={`bg-red-500 text-white rounded-full px-6 py-2 font-semibold text-base outline-none`}
               type="button"
             >
               {isFetching ? "posting the comment..." : <IoMdSend />}
