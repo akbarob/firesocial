@@ -19,6 +19,7 @@ import { categories } from "../utils/data";
 // import Toasts
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useCreatePinMutation } from "../Redux/Services/socialApi";
 
 const CreatePin = ({ user }) => {
   const notify = () => {
@@ -38,7 +39,7 @@ const CreatePin = ({ user }) => {
   console.log(user);
   const [title, setTitle] = useState("");
   const [about, setAbout] = useState("");
-  const [destination, setDestination] = useState("");
+  // const [destination, setDestination] = useState("");
   const [loading, setLoading] = useState(false);
   const [fields, setFields] = useState(false);
   const [category, setCategory] = useState(null);
@@ -50,6 +51,8 @@ const CreatePin = ({ user }) => {
 
   const navigate = useNavigate();
   const errorRef = useRef(null);
+  const [CreatePin, { isLoading, error: UploadError }] = useCreatePinMutation();
+
   // console.log(imagePreview);
   console.log(imageFile);
   console.log(imageUrl);
@@ -85,22 +88,69 @@ const CreatePin = ({ user }) => {
 
   const uploadPin = async (downloadURL) => {
     console.log(`next to Uploading Pin now `);
+    setText("Uploading...");
 
-    if (title && about && destination && imageFile && category) {
+    CreatePin({ downloadURL, title, about, user, category }); //RTK
+
+    console.log(` Pin has been uploaded image `);
+    setText("Upload");
+    navigate("/");
+  };
+
+  const uploadImage = (e) => {
+    if (title && about && imageFile && category) {
+      notify();
+      // Upload file and metadata to the object 'images/mountains.jpg'
       setText("Uploading...");
-      const docRef = await addDoc(collection(db, "Pins"), {
-        title,
-        destination,
-        about,
-        image: downloadURL,
-        userId: user._id,
-        postedBy: { _id: user._id, image: user.image, name: user.name },
-        category,
-        createdAt: serverTimestamp(),
-      });
-      console.log(` Pin has been uploaded image `);
-      setText("Upload");
-      navigate("/");
+      console.log(` Uploading image `);
+      const storageRef = ref(storage, `images/${imageFile.name + uuidv4()} `);
+      const uploadTask = uploadBytesResumable(storageRef, imageFile);
+
+      // Listen for state changes, errors, and completion of the upload.
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+          switch (snapshot.state) {
+            case "paused":
+              console.log("Upload is paused");
+              break;
+            case "running":
+              console.log("Upload is running");
+              break;
+          }
+        },
+        (error) => {
+          // A full list of error codes is available at
+          // https://firebase.google.com/docs/storage/web/handle-errors
+          switch (error.code) {
+            case "storage/unauthorized":
+              // User doesn't have permission to access the object
+              break;
+            case "storage/canceled":
+              // User canceled the upload
+              break;
+
+            // ...
+
+            case "storage/unknown":
+              // Unknown error occurred, inspect error.serverResponse
+              break;
+          }
+        },
+        () => {
+          // Upload completed successfully, now we can get the download URL
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            console.log("File available at", downloadURL);
+            setImageUrl({ img: downloadURL });
+            uploadPin(downloadURL);
+          });
+        }
+      );
+      console.log(`image has been uploaded `);
     } else {
       setText("Upload");
       setFields(true);
@@ -110,70 +160,13 @@ const CreatePin = ({ user }) => {
     }
   };
 
-  const uploadImage = (e) => {
-    notify();
-    // Upload file and metadata to the object 'images/mountains.jpg'
-    setText("Uploading...");
-    console.log(` Uploading image `);
-    const storageRef = ref(storage, `images/${imageFile.name + uuidv4()} `);
-    const uploadTask = uploadBytesResumable(storageRef, imageFile);
-
-    // Listen for state changes, errors, and completion of the upload.
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log("Upload is " + progress + "% done");
-        switch (snapshot.state) {
-          case "paused":
-            console.log("Upload is paused");
-            break;
-          case "running":
-            console.log("Upload is running");
-            break;
-        }
-      },
-      (error) => {
-        // A full list of error codes is available at
-        // https://firebase.google.com/docs/storage/web/handle-errors
-        switch (error.code) {
-          case "storage/unauthorized":
-            // User doesn't have permission to access the object
-            break;
-          case "storage/canceled":
-            // User canceled the upload
-            break;
-
-          // ...
-
-          case "storage/unknown":
-            // Unknown error occurred, inspect error.serverResponse
-            break;
-        }
-      },
-      () => {
-        // Upload completed successfully, now we can get the download URL
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          console.log("File available at", downloadURL);
-          setImageUrl({ img: downloadURL });
-          uploadPin(downloadURL);
-        });
-      }
-    );
-    console.log(`image has been uploaded `);
-  };
-
-  // file && UploadFile()
-
   return (
     <div className="flex flex-col justify-center items-center mt-5 lg:h-4/5">
       {/* <ToastContainer /> */}
       {fields && (
         <p
           className="text-red-500 mb-5 text-xl transiton-all duration-150 ease-in-out"
-          ref={errorRef}
+          errorRef={errorRef}
         >
           {" "}
           FIll in all Fields
@@ -211,7 +204,10 @@ const CreatePin = ({ user }) => {
                 {imagePreview ? (
                   <div>
                     {" "}
-                    <img src={imagePreview} className="h-[50%] w-[50%]" />{" "}
+                    <img
+                      src={imagePreview}
+                      className=" w-[50%] object-cover"
+                    />{" "}
                     <p>{imageFile.name}</p>
                   </div>
                 ) : null}
@@ -245,7 +241,7 @@ const CreatePin = ({ user }) => {
                 className="w-10 h-10 rounded-full object-cover"
                 alt="user-profile"
               />
-              <p className="font-bold "> {user.userName}</p>
+              <p className="font-bold "> {user.name}</p>
             </div>
           )}
           <input
@@ -255,13 +251,13 @@ const CreatePin = ({ user }) => {
             placeholder="What is your pin about?"
             className="outline-none text-base sm:text-xl border-b-2 border-gray-200 p-2 "
           />
-          <input
+          {/* <input
             type="text"
             value={destination}
             onChange={(e) => setDestination(e.target.value)}
             placeholder="Add a destination link"
             className="outline-none text-base sm:text-xl border-b-2 border-gray-200 p-2 "
-          />
+          /> */}
           <div className="flex flex-col ">
             <p className="mb-2 font-semibold text-lg sm:text-xl ">
               Choose Pin category

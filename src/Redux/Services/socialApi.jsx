@@ -282,6 +282,35 @@ export const socialApi = createApi({
       },
       invalidatesTags: ["Post"],
     }),
+    CreatePin: builder.mutation({
+      async queryFn({ downloadURL, title, about, user, category }) {
+        console.log("UploadPin Mutation:", {
+          downloadURL,
+          title,
+          about,
+          user,
+          category,
+        });
+        try {
+          const docRef = await addDoc(collection(db, "Pins"), {
+            title,
+            about,
+            image: downloadURL,
+            userId: user._id,
+            postedBy: { _id: user._id, image: user.image, name: user.name },
+            category,
+            createdAt: serverTimestamp(),
+          });
+          console.log(` Pin has been uploaded image `);
+          return { data: "uploaded!!!" };
+        } catch (err) {
+          console.error(err);
+        }
+        console.log("Akbar this is so Cool!");
+        return { data: "uploaded" };
+      },
+      invalidatesTags: ["Post"],
+    }),
   }),
 });
 
@@ -298,4 +327,5 @@ export const {
   useGetUserCreatedPinQuery,
   useGetUserSavedPinQuery,
   useDeletePinMutation,
+  useCreatePinMutation,
 } = socialApi;
