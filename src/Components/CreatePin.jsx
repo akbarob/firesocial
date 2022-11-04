@@ -16,8 +16,25 @@ import { useForm } from "react-hook-form";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { uuidv4 } from "@firebase/util";
 import { categories } from "../utils/data";
+// import Toasts
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CreatePin = ({ user }) => {
+  const notify = () => {
+    toast.success("Uploading !", {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    console.log("toats");
+  };
+
   console.log(user);
   const [title, setTitle] = useState("");
   const [about, setAbout] = useState("");
@@ -94,6 +111,7 @@ const CreatePin = ({ user }) => {
   };
 
   const uploadImage = (e) => {
+    notify();
     // Upload file and metadata to the object 'images/mountains.jpg'
     setText("Uploading...");
     console.log(` Uploading image `);
@@ -151,6 +169,7 @@ const CreatePin = ({ user }) => {
 
   return (
     <div className="flex flex-col justify-center items-center mt-5 lg:h-4/5">
+      {/* <ToastContainer /> */}
       {fields && (
         <p
           className="text-red-500 mb-5 text-xl transiton-all duration-150 ease-in-out"
@@ -210,7 +229,7 @@ const CreatePin = ({ user }) => {
             )}
           </div>
         </div>
-        <div></div>
+
         <div className="flex flex-1 flex-col gap-6 lg:pl-5 mt-5 w-full">
           <input
             type="text"

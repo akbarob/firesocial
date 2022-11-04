@@ -12,6 +12,7 @@ import {
   arrayRemove,
   arrayUnion,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -121,7 +122,6 @@ export const socialApi = createApi({
         }
       },
     }),
-
     savePost: builder.mutation({
       queryFn({ _id, userId }) {
         console.log({ _id, userId });
@@ -267,6 +267,18 @@ export const socialApi = createApi({
         }
       },
     }),
+    DeletePin: builder.mutation({
+      async queryFn(pinId) {
+        try {
+          await deleteDoc(doc(db, "Pins", pinId));
+          console.log("Pin deleted-:", pinId);
+          return { data: "Pin deleted" };
+        } catch (err) {
+          console.log(err);
+        }
+      },
+      invalidatesTags: ["Post"],
+    }),
   }),
 });
 
@@ -282,4 +294,5 @@ export const {
   useAddCommentMutation,
   useGetUserCreatedPinQuery,
   useGetUserSavedPinQuery,
+  useDeletePinMutation,
 } = socialApi;

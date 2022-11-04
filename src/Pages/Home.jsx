@@ -14,6 +14,7 @@ import { fetchUser } from "../utils/fetchUser";
 import Sidebar from "../Components/Sidebar";
 import Profile from "../Components/Profile";
 import Login from "../Components/Login";
+import { ToastContainer } from "react-toastify";
 const Home = () => {
   const dispatch = useDispatch();
   // const user = useSelector((state) => state.user.user);
@@ -26,6 +27,7 @@ const Home = () => {
   console.log(user);
   return (
     <div className="relative flex bg-gray-50 md:flex-row flex-col h-screen transition-all duration-75 ease-out">
+      <ToastContainer />
       <div className="hidden md:flex h-screen flex-initial">
         <Sidebar user={user} />
       </div>

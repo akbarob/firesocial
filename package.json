@@ -21,6 +21,7 @@
     "react-redux": "^8.0.4",
     "react-router-dom": "^6.4.2",
     "react-svg": "^15.1.11",
+    "react-toastify": "^9.1.1",
     "uuidv4": "^6.2.13",
     "vite-plugin-svgr": "^2.2.2"
   },

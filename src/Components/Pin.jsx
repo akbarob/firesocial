@@ -4,13 +4,35 @@ import { MdDownloadForOffline } from "react-icons/md";
 import { AiTwotoneDelete } from "react-icons/ai";
 import { BsFillArrowRightCircleFill } from "react-icons/bs";
 import {
+  useDeletePinMutation,
   useGetFeedQuery,
   useSavePostMutation,
   useUnSavePostMutation,
 } from "../Redux/Services/socialApi";
 import Spinner from "./Spinner";
 
-const Pin = ({ user, pin: { postedBy, image, destination, _id, save } }) => {
+// import Toasts
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+const Pin = ({
+  user,
+  pin: { postedBy, image, destination, _id, save, pinId },
+}) => {
+  const notify = () => {
+    toast.success("Deleted Post !", {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    console.log("toats");
+  };
+  console.log(pinId);
   const { data: Feed, isFetching, error: feederror } = useGetFeedQuery();
   const navigate = useNavigate();
   const [postHovered, setPostHoverd] = useState(false);
@@ -23,11 +45,8 @@ const Pin = ({ user, pin: { postedBy, image, destination, _id, save } }) => {
   console.log(postedBy?._id, user);
   const alreadySaved = !!save?.filter((item) => item === user?._id)?.length;
   // console.log(alreadySaved);
-  const DeletePin = (id) => {
-    // client.delete(id).then(() => {
-    //   window.location.reload();
-    // });
-  };
+  const [DeletePin, { isLoading }] = useDeletePinMutation();
+
   if (isFetching) return <Spinner message={`loading Image`} />;
   return (
     <div className="m-2 ">
@@ -96,12 +115,13 @@ const Pin = ({ user, pin: { postedBy, image, destination, _id, save } }) => {
                     : destination}
                 </a>
               )}
-              {console.log(postedBy?._id, user?.uid)}
-              {postedBy?._id === user?.uid && (
+              {console.log(postedBy?._id, user?._id)}
+              {postedBy?._id === user?._id && (
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    DeletePin(_id);
+                    notify();
+                    DeletePin(pinId);
                   }}
                   type="button"
                   className="bg-white opacity-70 hover:bg-red-500 text-black hover:text-white font-bold px-5 py-1 text-base rounded-3xl hover:shadow-md outline-none flex items-center"
